@@ -28,7 +28,7 @@ git clone git@github.com:descomplicandodados/luizalabs_teste.git
 ```
 - Navegue até a pasta do projeto
 ```
-cd luizalabs_yteste
+cd luizalabs_teste
 ```
 - Execute o comando
 ```

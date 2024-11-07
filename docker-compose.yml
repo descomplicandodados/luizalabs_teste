@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # Serviço para o Spark Master
+  spark-master:
+    image: bitnami/spark:latest
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+    ports:
+      - "8080:8080"  # Web UI do Spark Master
+    volumes:
+      - ./desafio1:/app  # Mapeando a pasta luizalabs inteira para o container
+
+  # Serviço para o Spark Worker
+  spark-worker:
+    image: bitnami/spark:latest
+    container_name: spark-worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    ports:
+      - "8081:8081"  # Web UI do Spark Worker
+    volumes:
+      - ./desafio1:/app  # Mapeando a pasta luizalabs inteira para o container
+
+  # Serviço para executar Spark Submit no desafio1
+  spark-submit:
+    image: bitnami/spark:latest
+    container_name: spark-submit
+    depends_on:
+      - spark-master
+      - spark-worker
+    volumes:
+      - ./desafio1:/app  # Mapeando a pasta luizalabs inteira para o container
+    command: ["spark-submit", "/app/solucao1.py"]  # Executa o arquivo do desafio1
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: mydatabase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+ 
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8082:80"
+    depends_on:
+      - db  
+
+
+  # Serviço para rodar os scripts em Python do desafio2
+  python-scripts-desafio2:
+    image: python:3.9  # Usando imagem oficial do Python
+    container_name: python-scripts-desafio2
+    volumes:
+      - ./desafio2:/app  # Mapeando a pasta desafio2 para o container
+    working_dir: /app  # O diretório de trabalho será /app, pois os scripts estão aqui
+    command: >
+      bash -c "
+        if [ -f /app/requirements.txt ]; then
+          pip install -r /app/requirements.txt;  # Instala as dependências
+        fi &&
+        python /app/gerartabelas.py && 
+        python /app/load.py && 
+        python /app/solucao2.py
+      "  # Comando para rodar os três scripts em sequência
+
+  # Serviço para rodar o script do desafio3
+  python-scripts-desafio3:
+    image: python:3.9  # Usando imagem oficial do Python
+    container_name: python-scripts-desafio3
+    volumes:
+      - ./desafio3:/app  # Mapeando a pasta desafio3 para o container
+    working_dir: /app  # O diretório de trabalho será /app, pois o script está aqui
+    command: >
+      bash -c "
+        if [ -f /app/requirements.txt ]; then
+          pip install -r /app/requirements.txt;  # Instala as dependências
+        fi &&
+        python /app/desafio3.py
+      "  # Executa o script do desafio3
+volumes:
+  pgdata: {}
+
+networks:
+  mynetwork:

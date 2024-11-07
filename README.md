@@ -24,7 +24,7 @@ Antes de começar, você precisará ter o docker instalado na sua máquina:
 
 - Clone o repositório para sua máquina local
 ```
-git clone git@github.com:descomplicandodados/luizalabs.git
+git clone git@github.com:descomplicandodados/luizalabs_teste.git
 ```
 - Navegue até a pasta do projeto
 ```

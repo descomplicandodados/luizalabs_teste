@@ -28,16 +28,13 @@ git clone git@github.com:descomplicandodados/luizalabs_teste.git
 ```
 - Navegue até a pasta do projeto
 ```
-cd luizalabs
+cd luizalabs_yteste
 ```
-- Execute os comandos
+- Execute o comando
 ```
-docker build -t luizalabs .
+docker-compose up -d 
 ```
 
-```
-docker run --rm luizalabs
-```
 
 # Funcionamento
 - No desafio 1 serão geradas duas instancias pyspark que irão executar o mesmo arquivo desafio1_1.py para gerar dois arquivos CSVs diferentes.
